@@ -19,7 +19,7 @@ btn4.pack()
 btn5 = Button(root, fg="red", bg="black", text="버튼5")
 btn5.pack()
 
-photo =PhotoImage(file="img\CheckBox.png")
+photo =PhotoImage(file="PythonGui\PythonGui_Basic\img\CheckBox.png")
 btn6 = Button(root, image=photo)
 btn6.pack()
 
