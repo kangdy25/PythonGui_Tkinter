@@ -17,7 +17,7 @@ def openfile():
             textedit.insert(END, file.read())
     
 def savefile():
-    with open(filename, "w", encoding="utf8") as file:
+    with open(filename, "w", encoding="utf8") as file: # with문을 통해서 자동으로 .close 실행
         file.write(textedit.get("1.0", END)) # 모든 내용을 가져와서 저장
 
 # 스크롤바
