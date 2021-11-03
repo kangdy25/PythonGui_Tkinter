@@ -1,9 +1,11 @@
+import os
 import tkinter.ttk as ttk
 import tkinter.messagebox as msgbox
 from tkinter import *
 from tkinter import filedialog
 from PIL import Image
 
+# 초기 GUI 세팅
 root = Tk()
 root.title("이미지 합치기")
 
@@ -36,12 +38,36 @@ def merge_image():
     print(list_file.get(0, END)) # 모든 파일 목록을 가지고 오기
     images = [Image.open(x) for x in list_file.get(0, END)]
     # size -> size[0] : width, size[1] : height
-    widths = [x.size[0] for x in images]
-    heights = [x.size[1] for x in images]
 
+    # widths = [x.size[0] for x in images]
+    # heights = [x.size[1] for x in images]
+
+    # zip 사용 위에 2줄 코드와 동일 의미
+    widths, heights = zip(*(x.size for x in images))
+
+    # 최대 넓이, 전체 높이 구하기
     max_width, total_height = max(widths), sum(heights)
-    print("max width : ", max_width)
-    print("total height : ", total_height)
+    
+    # 스케치북 준비
+    result_img = Image.new("RGB", (max_width, total_height), (255, 255, 255)) # 배경 흰 색
+    y_offset = 0 # y 위치 정보
+    # for img in images:
+    #     result_img.paste(img, (0, y_offset))
+    #     y_offset += img.size[1]
+    
+    for idx, img in enumerate(images):
+        result_img.paste(img, (0, y_offset))
+        y_offset += img.size[1]
+
+        progress = (idx + 1) / len(images) * 100 # 퍼센트 정보 계산
+        p_var.set(progress)
+        progress_bar.update()
+
+    dest_path = os.path.join(txt_dest_path.get(), "Merge_Photo.png")
+    result_img.save(dest_path)
+    msgbox.showinfo("알림", "작업이 완료되었습니다.")
+
+
 # 함수: 시작
 def start():
     # 각 옵션들 값 확인
@@ -61,6 +87,8 @@ def start():
 
     # 이미지 통합 작업
     merge_image()
+
+
 
 # 파일 프레임 (파일 추가, 선택 삭제 영역)
 file_frame = Frame(root)
@@ -153,15 +181,6 @@ btn_start = Button(frame_run, padx=5, pady=5, text="시작", width=12, command=s
 btn_start.pack(side="right", padx=5, pady=5)
 
 
-
-
-
-
-
-
-
-
-
-root.resizable(False, False)
+root.resizable(False, False) # 크기 조절 제한
 root.mainloop()
 
